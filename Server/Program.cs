@@ -1,11 +1,14 @@
+using BlazorCRUD.Server.Data;
+using BlazorCRUD.Server.ProductService;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();
 
