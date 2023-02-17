@@ -6,6 +6,12 @@ namespace BlazorCRUD.Client.Services.ProductService
     public class ProductService : IProductService
     {
         public List<Product> Products { get; set; } = new List<Product>();
+        private readonly HttpClient _http;
+
+        public ProductService(HttpClient http)
+        {
+            _http = http;
+        }
 
         public Task CreateProduct(Product product)
         {
@@ -22,9 +28,11 @@ namespace BlazorCRUD.Client.Services.ProductService
             throw new NotImplementedException();
         }
 
-        public Task GetProducts()
+        public async Task GetProducts()
         {
-            throw new NotImplementedException();
+            var results = await _http.GetFromJsonAsync<List<Product>>("api/product");
+
+            if (results is not null) Products = results;
         }
 
         public Task UpdateProduct(int id, Product product)
