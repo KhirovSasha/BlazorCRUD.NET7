@@ -1,39 +1,52 @@
 ﻿using BlazorCRUD.Server.Data;
 using BlazorCRUD.Shared;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorCRUD.Server.ProductService
 {
     public class ProductService : IProductService
     {
-        public readonly AppDbContext _dbContext;
+        private readonly AppDbContext _dbContext;
         public ProductService(AppDbContext dbContext) 
         { 
             _dbContext = dbContext;
         }
-        public Task<Product> CreateProduct(Product product)
+        public async Task<Product> CreateProduct(Product product)
         {
-            throw new NotImplementedException();
+            await _dbContext.Products.AddAsync(product);
+            await _dbContext.SaveChangesAsync();
+            return product;
         }
 
-        public Task<bool> DeleteProduct(int productId)
+        public async Task<bool> DeleteProduct(int productId)
         {
-            throw new NotImplementedException();
+            var dbProduct = await _dbContext.Products.FindAsync(productId);
+            if (dbProduct == null) return false;
+
+            _dbContext.Remove(dbProduct);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
         }
 
-        public Task<Product?> GetProductById(int productId)
+        public async Task<Product?> GetProductById(int productId)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Products.FindAsync(productId);
         }
 
         public async Task<List<Product>> GetProducts()
         {
-            throw new NotImplementedException();
+            return await _dbContext.Products.ToListAsync();
         }
 
-        public Task<Product> UpdateProduct(int productId, Product product)
+        public async Task<Product> UpdateProduct(int productId, Product product)
         {
-            throw new NotImplementedException();
+            var productDb = _dbContext.Products.FirstOrDefault(p => p.Id == productId);
+
+            productDb = product;
+
+            await _dbContext.SaveChangesAsync();
+            return productDb;
         }
     }
 }
