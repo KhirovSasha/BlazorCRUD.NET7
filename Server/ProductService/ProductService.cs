@@ -13,7 +13,7 @@ namespace BlazorCRUD.Server.ProductService
         }
         public async Task<Product> CreateProduct(Product product)
         {
-            await _dbContext.Products.AddAsync(product);
+            _dbContext.Products.Add(product);
             await _dbContext.SaveChangesAsync();
             return product;
         }
@@ -41,12 +41,16 @@ namespace BlazorCRUD.Server.ProductService
 
         public async Task<Product> UpdateProduct(int productId, Product product)
         {
-            var productDb = _dbContext.Products.FirstOrDefault(p => p.Id == productId);
+            var productDb = await _dbContext.Products.FindAsync(productId);
+            if(productDb != null)
+            {
+                productDb.Title = product.Title;
+                productDb.Price = product.Price;
+                productDb.Category = product.Category;
 
-            productDb = product;
-
-            await _dbContext.SaveChangesAsync();
-            return productDb;
+                await _dbContext.SaveChangesAsync();
+            }
+            return product;
         }
     }
 }
