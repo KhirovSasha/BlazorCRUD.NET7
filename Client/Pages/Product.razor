@@ -29,6 +29,10 @@ else
     </div>
     <br />
     <button type="submit" class="btn btn-primary">@btnText</button>
+    <button type="button" class="btn btn-danger"
+            @onclick="DeleteProduct">
+        Delete Product
+    </button>
 </EditForm>
 
 @code {
@@ -61,5 +65,10 @@ else
             await ProductService.CreateProduct(product);
         else
             await ProductService.UpdateProduct((int)Id, product);
+    }
+
+    async Task DeleteProduct()
+    {
+        await ProductService.DeleteProduct(product.Id);
     }
 }
