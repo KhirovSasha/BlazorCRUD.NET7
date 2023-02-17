@@ -1,4 +1,5 @@
 ﻿using BlazorCRUD.Shared;
+using Microsoft.AspNetCore.Components;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -8,15 +9,18 @@ namespace BlazorCRUD.Client.Services.ProductService
     {
         public List<Product> Products { get; set; } = new List<Product>();
         private readonly HttpClient _http;
+        private readonly NavigationManager _navigationManager;
 
-        public ProductService(HttpClient http)
+        public ProductService(HttpClient http, NavigationManager navigationManager)
         {
             _http = http;
+            _navigationManager = navigationManager;
         }
 
-        public Task CreateProduct(Product product)
+        public async Task CreateProduct(Product product)
         {
-            throw new NotImplementedException();
+            await _http.PostAsJsonAsync("api/product", product);
+            _navigationManager.NavigateTo("products");
         }
 
         public Task DeleteProduct(int id)
@@ -43,9 +47,10 @@ namespace BlazorCRUD.Client.Services.ProductService
             if (results is not null) Products = results;
         }
 
-        public Task UpdateProduct(int id, Product product)
+        public async Task UpdateProduct(int id, Product product)
         {
-            throw new NotImplementedException();
+            await _http.PutAsJsonAsync($"api/product/{id}", product);
+            _navigationManager.NavigateTo("products");
         }
     }
 }
