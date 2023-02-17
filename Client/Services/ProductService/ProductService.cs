@@ -1,4 +1,5 @@
 ﻿using BlazorCRUD.Shared;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace BlazorCRUD.Client.Services.ProductService
@@ -23,9 +24,16 @@ namespace BlazorCRUD.Client.Services.ProductService
             throw new NotImplementedException();
         }
 
-        public Task<Product?> GetProductById(int Id)
+        public async Task<Product?> GetProductById(int Id)
         {
-            throw new NotImplementedException();
+            var result = await _http.GetAsync($"api/product/{Id}");
+
+            if(result.StatusCode == HttpStatusCode.OK) 
+            {
+                return await result.Content.ReadFromJsonAsync<Product>();
+            }
+
+            return null;
         }
 
         public async Task GetProducts()
