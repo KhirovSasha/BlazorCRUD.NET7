@@ -23,9 +23,10 @@ namespace BlazorCRUD.Client.Services.ProductService
             _navigationManager.NavigateTo("products");
         }
 
-        public Task DeleteProduct(int id)
+        public async Task DeleteProduct(int id)
         {
-            throw new NotImplementedException();
+            await _http.DeleteAsync($"api/product/{id}");
+            _navigationManager.NavigateTo("products");
         }
 
         public async Task<Product?> GetProductById(int Id)
