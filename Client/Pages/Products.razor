@@ -30,6 +30,10 @@
         }
     </tbody>
 </table>
+<button class="btn btn-primary" 
+        @onclick="CreateNewProduct">
+    Create New Product
+</button>
 
 @code {
     protected override async Task OnInitializedAsync()
@@ -40,5 +44,10 @@
     void ShowProduct(int id)
     {
         NavigationManager.NavigateTo($"product/{id}");
+    }
+
+    void CreateNewProduct()
+    {
+        NavigationManager.NavigateTo("/product");
     }
 }
