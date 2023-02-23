@@ -4,6 +4,23 @@
 
 <h3>Products</h3>
 
+
+<div class="btn-toolbar">
+    <div class="btn-group mr-2">
+        <div class="input-group">
+            <input class="form-control" type="text" @bind-value="searchTerm" />
+        </div>
+        <button @onclick="Search" class="btn btn-secondary">Search</button>
+    </div>
+    @if (products.Count != ProductService.Products.ToList().Count)
+    {
+        <div class="pl-4">
+            <button @onclick="Refresh" class="btn btn-secondary ">Refresh</button>
+        </div>
+    }
+</div>
+ 
+
 <table class="table">
     <thead>
         <tr>
@@ -14,7 +31,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var product in ProductService.Products)
+        @foreach (var product in products)
         {
             <tr>
                 <td>@product.Title</td>
@@ -36,9 +53,34 @@
 </button>
 
 @code {
+
+    private string? searchTerm;
+
+    private List<BlazorCRUD.Shared.Product>? products;
+
+    private void Search()
+    {
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            products = ProductService.Products.Where(p => p.Title.ToLower().Contains(searchTerm.ToLower())).ToList();
+        }
+        else
+        {
+            products = ProductService.Products.ToList();
+        }
+
+    }
+
+    private void Refresh()
+    {
+        searchTerm = null;
+        Search();
+    }
+
     protected override async Task OnInitializedAsync()
     {
         await ProductService.GetProducts();
+        products = ProductService.Products.ToList();
     }
 
     void ShowProduct(int id)
